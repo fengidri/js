@@ -1,3 +1,4 @@
+//
 jQuery.fn.cloud         = function(){
     var Cloud           = {};
     Cloud.timer_space   = 100;
