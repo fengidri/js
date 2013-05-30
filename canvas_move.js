@@ -7,9 +7,10 @@ var canvas={ }
 canvas.createNew=function()
 {
     var obj       = { }
-    timer_space   = 100;
-    move_fun_list = [];
-    obj.width     =10;
+    var timer_space   = 100;
+    var move_fun_list = [];
+    var callback      = [];
+    obj.width     = 10;
     obj.line      = function( x,y,offset_x,offset_y)
     { 
         this.ctx.beginPath();
@@ -30,7 +31,12 @@ canvas.createNew=function()
         {
             if(move_fun_list.length==0)
             {
-                clearInterval(timer);
+                if(callback.length>0){
+                    callback.shift()();
+
+                }else{
+                    clearInterval(timer);
+                }
             }else
             {
                 back=move_fun_list[0]()
@@ -61,27 +67,11 @@ canvas.createNew=function()
         move_fun_list.push(back())
 
     }
+    obj.callback=function(back )
+    { 
+        callback.push( back)
+
+    }
     return obj;
 }
-        //f = {}
 
-        //f.createNew = function(){
-        //    obj={}
-        //    n                 = time*timer_space;
-        //    x_space           = (offset_x-x)/n;
-        //    y_space           = (offset_y-y)/n;
-        //    back              = n
-        //    obj.main = function( ){
-        //            obj.line( x,y,x+x_space,y+y_space);
-        //            x    = x+x_space;
-        //            y    = y+y_space;
-        //            back = back -1
-        //                return back
-        //        }
-        //    return obj
-
-        //}
-        //back        = function(){
-
-        //}
-        //move_fun_list.push(back())
