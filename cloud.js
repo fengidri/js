@@ -1,10 +1,10 @@
-//
 jQuery.fn.cloud         = function(){
     var Cloud           = {};
     Cloud.timer_space   = 100;
-    Cloud.center_x      = 300;
-    Cloud.center_y      = 300;
-    Cloud.R             = 160;
+    Cloud.center_x      = 200;
+    Cloud.center_y      = 200;
+    Cloud.R             = 190;
+    Cloud._status        = 'stop';
     Cloud.speed         = 0.05;
     Cloud.move_fun_list = [];
     Cloud.CreateNew     = function(list){
@@ -36,17 +36,23 @@ jQuery.fn.cloud         = function(){
         return obj;
     }
     Cloud.move=function(){
-        this.timer=setInterval(function()
-        {
-            for(i in Cloud.move_fun_list){
-                Cloud.move_fun_list[i].offset()
+        if(Cloud._status =='stop'){
+            Cloud._status ='move';
+            this.timer=setInterval(function()
+            {
+                for(i in Cloud.move_fun_list){
+                    Cloud.move_fun_list[i].offset()
 
-            }
-        },this.timer_space)
+                }
+            },this.timer_space)
+        }
 
     }
-    Cloud.stop=function(){
-        clearInterval(this.timer);
+    Cloud.stop           = function(){
+        if(Cloud._status =='move'){
+            clearInterval(this.timer);
+            Cloud._status ='stop';
+        }
 
     }
     //##################################################################
@@ -55,9 +61,11 @@ jQuery.fn.cloud         = function(){
                 var list    = [];
                 list[0] = $(this).children('span').text();
                 list[1]     = $(this);
+                $(this).children('#name').show()
                 $(this).css('cursor','pointer')
+                $(this).css('position','absolute')
                 Cloud.move_fun_list.push(Cloud.CreateNew(list));
-                $(this).children('span').hover(function(){
+                $(this).hover(function(){
                     $(this).css('color','blue');
                     Cloud.stop();
 
@@ -70,14 +78,21 @@ jQuery.fn.cloud         = function(){
                 }
                 )
             })
+    this[0]._cloud      = Cloud;
     Cloud.move();
 }
 
 
+jQuery.fn.cloud_stop         = function(){
+    this[0]._cloud.stop();
+    for(i in this[0]._cloud.move_fun_list){
+        this[0]._cloud.move_fun_list[i].obj.unbind('mouseenter').unbind('mouseleave'); 
+    }
 
-
-
-
+}
+jQuery.fn.cloud_start         = function(){
+    this[0]._cloud.move();
+}
 
 
 
